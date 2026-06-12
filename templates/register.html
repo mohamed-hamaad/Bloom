@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register — Bloom{% endblock %}
+
+{% block content %}
+<section class="min-h-screen flex items-center justify-center py-20 bg-cream">
+    <div class="w-full max-w-md px-6 sm:px-10 py-10 sm:py-12 border border-dark/10 bg-cream rounded-2xl mx-4">
+
+        <p class="text-xs tracking-widest uppercase text-muted mb-2">Welcome</p>
+        <h1 class="font-display text-[2rem] sm:text-[2.2rem] font-light mb-8">
+            Create an <em class="text-rose">account</em>
+        </h1>
+
+        <form method="POST" class="flex flex-col gap-5">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="flex flex-col gap-1">
+                <label class="text-xs tracking-widest uppercase text-muted">{{ field.label }}</label>
+                <div class="relative">
+                    {{ field }}
+                    {% if 'password' in field.name %}
+                    <img src="{% static 'icons/icons8-eye-50.png' %}" alt="toggle password"
+                        class="toggle-password w-5 h-5 absolute right-2.5 top-2 cursor-pointer opacity-60 hover:opacity-100 transition-opacity">
+                    {% endif %}
+                </div>
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                    <p class="text-xs text-rose mt-1">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit"
+                class="mt-2 px-8 py-3 text-xs tracking-widest uppercase bg-dark text-cream hover:bg-rose transition-all cursor-pointer">
+                Register
+            </button>
+        </form>
+        <p class="text-xs text-muted mt-6 text-center">
+            Already have an account?
+            <a href="{% url 'login' %}" class="text-dark underline">Login</a>
+        </p>
+    </div>
+</section>
+{% endblock %}

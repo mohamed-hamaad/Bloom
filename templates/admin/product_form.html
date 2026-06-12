@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ action }} Product — Bloom{% endblock %}
+
+{% block content %}
+<div class="flex min-h-screen">
+
+<!-- SIDEBAR -->
+<aside class="bg-dark text-cream flex flex-col px-6 py-8 gap-8 shrink-0" style="width:180px;">
+    <div>
+    <span class="font-display text-[1.4rem] font-light tracking-[0.08em]">
+        bloom<span class="text-rose italic">.</span>
+    </span>
+    <p class="text-[0.6rem] tracking-[0.15em] uppercase opacity-40 mt-1">Dashboard</p>
+    </div>
+
+    <nav class="flex flex-col gap-1">
+    <a href="{% url 'dashboard' %}"
+        class="text-xs tracking-widest uppercase px-3 py-2 text-cream/50 hover:text-cream transition-colors">
+        Overview
+    </a>
+    <a href="{% url 'add_product' %}"
+        class="text-xs tracking-widest uppercase px-3 py-2 text-cream border-l-2 border-rose"
+        style="background:rgba(200,112,90,0.15);">
+        + Add Product
+    </a>
+    </nav>
+
+    <a href="{% url 'home' %}"
+    class="mt-auto text-xs tracking-widest uppercase text-cream/40 hover:text-cream/70 transition-colors">
+    ← Back to site
+    </a>
+</aside>
+
+<!-- MAIN -->
+<main class="flex-1 px-8 py-10 bg-cream overflow-auto">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-end mb-10">
+    <div>
+        <p class="text-xs tracking-widest uppercase text-muted mb-1">
+        Dashboard / <span class="text-rose">{{ action }} Product</span>
+        </p>
+        <h1 class="font-display text-[2rem] font-light">
+        {{ action }} <em class="text-rose">Product</em>
+        </h1>
+    </div>
+    <a href="{% url 'dashboard' %}"
+        class="text-xs tracking-widest uppercase px-5 py-3 border border-dark/20 text-dark hover:bg-dark hover:text-cream transition-all">
+        ← Back to Dashboard
+    </a>
+    </div>
+
+    <!-- FORM -->
+    <div class="max-w-2xl">
+    <form method="POST" enctype="multipart/form-data" class="flex flex-col gap-6">
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div class="flex flex-col gap-2">
+        <label class="text-xs tracking-widest uppercase text-muted">{{ field.label }}</label>
+
+        {% if field.field.widget.input_type == 'checkbox' %}
+        <div class="flex items-center gap-3">
+            {{ field }}
+            <span class="text-sm text-muted">{{ field.label }}</span>
+        </div>
+        {% else %}
+            {{ field }}
+        {% endif %}
+
+        {% if field.errors %}
+            {% for error in field.errors %}
+            <p class="text-xs text-rose">{{ error }}</p>
+            {% endfor %}
+        {% endif %}
+
+        {% if field.help_text %}
+        <p class="text-xs text-muted opacity-60">{{ field.help_text }}</p>
+        {% endif %}
+        </div>
+        {% endfor %}
+
+        {% if action == 'Edit' and product.image %}
+        <div class="flex flex-col gap-2">
+        <p class="text-xs tracking-widest uppercase text-muted">Current Image</p>
+            <div class="rounded-md w-80 h-96 bg-rose-light overflow-hidden flex items-center justify-center">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover"/>
+            </div>
+        </div>
+        {% endif %}
+        <img id="image-preview" src="" class="hidden w-24 h-24 object-cover mt-2 border border-dark/10"/>
+
+        <div class="flex gap-4 mt-4">
+        <button type="submit"
+            class="text-xs tracking-widest uppercase px-8 py-3 bg-dark text-cream hover:bg-rose transition-all cursor-pointer">
+            {% if action == 'Edit' %}
+                Submit Changes
+            {% else %}
+                Add Product
+            {% endif %}
+        </button>
+        <a href="{% url 'dashboard' %}"
+            class="text-xs tracking-widest uppercase px-8 py-3 border border-dark/20 text-dark hover:bg-dark hover:text-cream transition-all">
+            Cancel
+        </a>
+        </div>
+
+    </form>
+    </div>
+
+</main>
+</div>
+{% endblock %}

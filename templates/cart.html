@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cart — Bloom{% endblock %}
+
+{% block content %}
+<section class="min-h-screen px-4 sm:px-10 py-10 sm:py-16">
+
+    <p class="text-xs tracking-widest uppercase text-muted mb-2">Shop / <span class="text-rose">Cart</span></p>
+    <h1 class="font-display text-[2rem] sm:text-[2.8rem] font-light leading-none mb-8 sm:mb-10">
+        Your <em class="text-rose">Cart</em>
+    </h1>
+
+    {% if cart_items %}
+    <div class="flex flex-col lg:flex-row gap-8 lg:gap-16">
+
+        <!-- ITEMS -->
+        <div class="flex flex-col gap-6 w-full lg:w-3/4">
+            {% for item in cart_items %}
+            <div class="flex gap-4 sm:gap-6 border-b border-dark/10 pb-6">
+
+                <!-- IMAGE -->
+                <a href="{% url 'product_detail' item.product.id %}" class="shrink-0">
+                    <div class="bg-rose-light w-20 h-20 sm:w-24 sm:h-24 overflow-hidden">
+                        {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}"
+                            class="w-full h-full object-cover"/>
+                        {% endif %}
+                    </div>
+                </a>
+
+                <!-- DETAILS -->
+                <div class="flex flex-col justify-between flex-1 min-w-0">
+                    <div>
+                        <a href="{% url 'product_detail' item.product.id %}">
+                            <p class="font-display text-base sm:text-[1.15rem] truncate">{{ item.product.name }}</p>
+                        </a>
+                        <p class="text-xs text-muted tracking-widest uppercase mt-1">{{ item.product.category|title }}</p>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-3 mt-3">
+
+                        <!-- QUANTITY -->
+                        <form method="POST" action="{% url 'update_cart' item.product.id %}" class="flex items-center gap-3">
+                            {% csrf_token %}
+                            <button type="submit" name="quantity" value="{{ item.quantity|add:'-1' }}"
+                                class="w-7 h-7 border border-dark/20 text-sm hover:bg-dark hover:text-cream transition-all flex items-center justify-center">−</button>
+                            <span class="text-sm w-4 text-center">{{ item.quantity }}</span>
+                            <button type="submit" name="quantity" value="{{ item.quantity|add:'1' }}"
+                                class="w-7 h-7 border border-dark/20 text-sm hover:bg-dark hover:text-cream transition-all flex items-center justify-center">+</button>
+                        </form>
+
+                        <div class="flex items-center gap-4">
+                            <span class="text-sm font-medium text-rose">EGP {{ item.total }}</span>
+                            <a href="{% url 'remove_from_cart' item.product.id %}"
+                                class="border text-center rounded-xl bg-dark text-white text-xs cursor-pointer tracking-widest py-2 px-3">
+                                Remove
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="flex flex-col gap-8 w-full lg:w-1/4">
+            <!-- ORDER SUMMARY -->
+            <div class="border border-dark/10 px-6 sm:px-8 py-6 sm:py-8 flex flex-col gap-5">
+                <p class="text-xs tracking-widest uppercase text-muted">Order Summary</p>
+                <div class="flex flex-col gap-3">
+                    {% for item in cart_items %}
+                    <div class="flex justify-between text-sm gap-4">
+                        <span class="text-muted truncate">{{ item.product.name }} × {{ item.quantity }}</span>
+                        <span class="shrink-0">EGP {{ item.total }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="bg-gray-600 h-0.5 w-full opacity-20"></div>
+                <div class="flex justify-between">
+                    <span class="text-xs tracking-widest uppercase">Total</span>
+                    <span class="text-sm font-medium text-rose">EGP {{ grand_total }}</span>
+                </div>
+                <a href="{% url 'checkout' %}" 
+                    class="mt-2 px-8 py-3 text-xs tracking-widest uppercase bg-dark text-cream cursor-pointer text-center">
+                    Proceed to Checkout
+                </a>
+                <div class="flex items-center gap-3">
+                    <img src="{% static 'icons/icons8-cash-on-delivery-66.png' %}" alt="Cash on Delivery" class="w-6 h-6">
+                    <p class="text-xs tracking-widest uppercase text-muted">Cash on Delivery</p>
+                </div>
+            </div>
+
+            <a href="{% url 'products_all' %}"
+                class="border px-3 py-4 text-center rounded-xl bg-dark text-white text-xs cursor-pointer tracking-widest">
+                Continue Shopping
+            </a>
+        </div>
+
+    </div>
+
+    {% else %}
+    <div class="flex flex-col items-center justify-center py-20 sm:py-32 text-center">
+        <p class="font-display text-[1.8rem] sm:text-[2rem] font-light text-muted mb-3">Your cart is empty</p>
+        <p class="text-sm text-muted mb-8">Looks like you haven't added anything yet.</p>
+        <a href="{% url 'products_all' %}"
+            class="rounded-xl px-8 py-3 text-xs tracking-widest uppercase bg-dark text-cream cursor-pointer transition-all">
+            Shop Now
+        </a>
+    </div>
+    {% endif %}
+
+</section>
+{% endblock %}

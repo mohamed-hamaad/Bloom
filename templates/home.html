@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Bloom — Handcrafted Bouquets{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="grid grid-cols-1 lg:grid-cols-2 min-h-130">
+    <div class="flex flex-col justify-center px-8 sm:px-16 py-16 sm:py-20 bg-cream">
+        <p class="text-xs tracking-widest uppercase mb-5 text-rose">Handcrafted with love · Cairo</p>
+        <h1 class="font-display text-[2.8rem] sm:text-[3.8rem] font-light leading-[1.1] mb-6">
+            Every bloom<br>tells a <em class="text-rose">story.</em>
+        </h1>
+        <p class="text-sm leading-8 mb-8 text-muted max-w-95">
+            Artisan bouquets crafted for every moment — from intimate gifts to grand celebrations. Each arrangement is made by hand, with flowers sourced fresh daily.
+        </p>
+        <div class="flex flex-wrap gap-4 items-center">
+            <a href="{% url 'products_all' %}"
+                class="rounded-2xl px-8 py-3 text-xs tracking-widest uppercase bg-dark text-cream hover:bg-rose transition-all">
+                Shop Now
+            </a>
+            <a href="{% url 'products_all' %}" class="text-xs tracking-wider text-muted">
+                View Collections →
+            </a>
+        </div>
+    </div>
+    <div class="flex items-center justify-center bg-rose-light min-h-64 lg:min-h-0">
+        <p class="font-display italic text-rose opacity-60">your hero photo here</p>
+    </div>
+</section>
+
+<!-- STRIP -->
+<div class="flex flex-wrap justify-center gap-6 sm:gap-16 py-4 text-xs tracking-widest uppercase bg-dark text-cream px-4">
+    <span>🌸 Fresh daily</span>
+    <span>🎀 Custom orders</span>
+    <span>🚚 Cairo delivery</span>
+    <span>💬 Order via WhatsApp</span>
+</div>
+
+<!-- FEATURED PRODUCTS -->
+<section id="featured" class="px-4 sm:px-10 py-12 sm:py-16">
+    <div class="flex justify-between items-center mb-8 sm:mb-10">
+        <h2 class="font-display text-[1.8rem] sm:text-[2.2rem] font-light">
+            Featured <em class="text-rose">Bouquets</em>
+        </h2>
+        <a href="{% url 'products_all' %}" class="text-xs sm:text-md tracking-widest uppercase text-muted">View all →</a>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        {% for product in featured_products %}
+        <a href="{% url 'product_detail' product.id %}" class="group block">
+            <div class="bg-white rounded-2xl overflow-hidden transition-all duration-300">
+                <div class="relative bg-rose-light h-64 sm:h-80 overflow-hidden flex items-center justify-center">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                        class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"/>
+                    {% endif %}
+                    {% if forloop.first %}
+                    <span class="absolute top-4 left-4 text-[10px] tracking-[0.2em] uppercase px-3 py-1 rounded-full bg-rose text-cream">
+                        New
+                    </span>
+                    {% endif %}
+                </div>
+                <div class="p-5">
+                    <h3 class="font-display text-lg mb-2 text-gray-800 line-clamp-1">{{ product.name }}</h3>
+                    <div class="flex items-center justify-between">
+                        <span class="text-base font-semibold text-rose">EGP {{ product.price }}</span>
+                        <span class="text-xs uppercase tracking-wider text-gray-400">{{ product.category }}</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- SHOP BY OCCASION -->
+<section class="px-4 sm:px-10 py-10 sm:py-14 bg-[#F3EDE4]">
+    <h2 class="font-display text-[1.8rem] sm:text-[2.2rem] font-light text-center">
+        Shop by <em class="text-rose">Occasion</em>
+    </h2>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+        <a href="{% url 'products' 'men' %}" class="rounded-xl block text-center p-4 sm:p-6 bg-rose-light border border-dark/10 hover:-translate-y-1 transition-transform">
+            <p class="font-display text-base mb-1">Men</p>
+        </a>
+        <a href="{% url 'products' 'bouquets' %}" class="rounded-xl block text-center p-4 sm:p-6 bg-cream border border-dark/10 hover:-translate-y-1 transition-transform">
+            <p class="font-display text-base mb-1">Bouquets</p>
+        </a>
+        <a href="{% url 'products' 'gifts' %}" class="rounded-xl block text-center p-4 sm:p-6 bg-rose-light border border-dark/10 hover:-translate-y-1 transition-transform">
+            <p class="font-display text-base mb-1">Gifts</p>
+        </a>
+        <a href="{% url 'products' 'matching sets' %}" class="rounded-xl block text-center p-4 sm:p-6 bg-cream border border-dark/10 hover:-translate-y-1 transition-transform">
+            <p class="font-display text-base mb-1">Matching Sets</p>
+        </a>
+    </div>
+</section>
+
+<!-- WHATSAPP BANNER -->
+<section class="mx-4 sm:mx-10 my-12 sm:my-16 p-8 sm:p-12 bg-dark rounded-2xl">
+    <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
+        <div>
+            <h2 class="font-display text-[1.8rem] sm:text-[2rem] font-light text-cream mb-2">
+                Order your <em class="text-gold">custom</em> bouquet
+            </h2>
+            <p class="text-sm leading-7 text-muted mt-3">
+                Tell us your vision and we'll bring it to life.<br>Custom orders available with 24h notice.
+            </p>
+        </div>
+        <a href="https://wa.me/201121844169" target="_blank"
+            class="w-full lg:w-auto flex items-center justify-center gap-2 px-8 py-4 text-xs tracking-widest uppercase bg-rose text-cream hover:bg-[#b85e49] transition-all whitespace-nowrap">
+            💬 Chat on WhatsApp
+        </a>
+    </div>
+</section>
+
+{% endblock %}

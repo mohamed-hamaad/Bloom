@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} — Bloom{% endblock %}
+
+{% block content %}
+<div class="mb-44">
+    <section class="px-4 sm:px-10 py-10 sm:py-16">
+        <div class="flex flex-col lg:flex-row gap-8 lg:gap-10">
+
+            <!-- IMAGES -->
+            <div class="w-full lg:w-1/2 flex flex-col gap-4">
+                <div class="bg-rose-light h-72 sm:h-96 flex items-center justify-center overflow-hidden">
+                    {% if product.image %}
+                    <img id="main-img" src="{{ product.image.url }}" alt="{{ product.name }}"
+                        class="w-full h-full object-contain cursor-zoom-in"
+                        onclick="openLightbox(this.src)"/>
+                    {% else %}
+                    <p class="font-display italic text-rose opacity-60">No image available</p>
+                    {% endif %}
+                </div>
+
+                <!-- Thumbnails -->
+                {% if product.images.all %}
+                <div class="flex gap-3 flex-wrap">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}"
+                        onclick="document.getElementById('main-img').src=this.src"
+                        class="w-14 h-14 sm:w-16 sm:h-16 object-cover cursor-pointer border-2 border-dark opacity-100"/>
+                    {% endif %}
+                    {% for img in product.images.all %}
+                    <img src="{{ img.image.url }}"
+                        onclick="document.getElementById('main-img').src=this.src; "
+                        class="thumbnail-img w-14 h-14 sm:w-16 sm:h-16 object-cover cursor-pointer border-2 border-transparent hover:border-dark opacity-70 hover:opacity-100 transition-all"/>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- PRODUCT DETAILS -->
+            <div class="w-full lg:w-1/2 flex flex-col">
+                <h1 class="font-display text-[2rem] sm:text-[2.5rem] font-light mb-4">{{ product.name }}</h1>
+                <p class="text-sm leading-8 mb-6 text-muted">{{ product.description }}</p>
+                <span class="text-lg font-medium mb-6 text-rose">EGP {{ product.price }}</span>
+                <a href="{% url 'add_to_cart' product.id %}"
+                    class="px-8 py-3 text-xs tracking-widest uppercase bg-dark text-cream hover:bg-rose transition-all text-center sm:text-left">
+                    Add to Cart
+                </a>
+
+                <div class="bg-gray-600 h-0.5 w-full mt-10"></div>
+
+                <div class="flex items-center gap-4">
+                    <img src="{% static 'icons/icons8-handcrafted-50.png' %}" alt="Handcrafted" class="w-8 h-8 my-4 ml-3">
+                    <p class="text-xs tracking-widest uppercase text-muted">Handcrafted with love · Cairo</p>
+                </div>
+
+                <div class="bg-gray-600 h-0.5 w-full"></div>
+
+                <div class="flex items-center gap-4">
+                    <img src="{% static 'icons/icons8-cash-on-delivery-66.png' %}" alt="Cash on Delivery" class="w-8 h-8 my-4 ml-3">
+                    <p class="text-xs tracking-widest uppercase text-muted">Cash on Delivery</p>
+                </div>
+
+                <div class="bg-gray-600 h-0.5 w-full"></div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div id="lightbox" class="fixed inset-0 z-50 flex flex-col items-center justify-center transition-opacity"
+    style="opacity: 0; pointer-events: none; background-color: rgba(28, 22, 18, 0.85);">
+    <div style="background-color: #1C1612;" class="w-full h-16 flex items-center justify-end px-8">
+        <button onclick="closeLightbox()" class="text-cream opacity-60 hover:opacity-100 text-xs tracking-widest uppercase transition-opacity">✕ Close</button>
+    </div>
+    <div class="flex items-center gap-4 sm:gap-6 flex-1 w-full justify-center">
+        <button onclick="prevImage()"z-100 class="text-cream opacity-60 hover:opacity-100 text-2xl transition-opacity px-2 sm:px-4">←</button>
+        <img id="lightbox-img" src="" class="max-h-[75vh] max-w-[75vw] sm:max-w-[70vw] object-contain" onclick="event.stopPropagation()">
+        <button onclick="nextImage()" z-100 class="text-cream opacity-60 hover:opacity-100 text-2xl transition-opacity px-2 sm:px-4">→</button>
+    </div>
+    <div style="background-color: #1C1612;" class="w-full h-16"></div>
+</div>
+{% endblock %}

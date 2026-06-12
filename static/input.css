@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@layer components {
+    .bg-cream { background-color: #FAF7F2; }
+    .bg-dark { background-color: #1C1612; }
+    .bg-rose { background-color: #C8705A; }
+    .bg-rose-light { background-color: #F0D5CD; }
+    .bg-sage { background-color: #8A9E8C; }
+    .bg-gold { background-color: #C9A96E; }
+    .bg-muted { background-color: #7A6E65; }
+
+    .text-cream { color: #FAF7F2; }
+    .text-dark { color: #1C1612; }
+    .text-rose { color: #C8705A; }
+    .text-rose-light { color: #F0D5CD; }
+    .text-sage { color: #8A9E8C; }
+    .text-gold { color: #C9A96E; }
+    .text-muted { color: #7A6E65; }
+
+    .border-dark { border-color: #1C1612; }
+    .border-rose { border-color: #C8705A; }
+}
+
+@layer base {
+    input, textarea, select {
+        border-radius: inherit;
+        background-color: inherit;
+    }
+}

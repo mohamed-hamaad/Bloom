@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login — Bloom{% endblock %}
+
+{% block content %}
+<section class="min-h-screen flex items-center justify-center py-20 bg-cream">
+    <div class="w-full max-w-md px-6 sm:px-10 py-10 sm:py-12 border border-dark/10 bg-cream mx-4 rounded-2xl">
+
+        <p class="text-xs tracking-widest uppercase text-muted mb-2">Welcome back</p>
+        <h1 class="font-display text-[2rem] sm:text-[2.2rem] font-light mb-8">
+            Sign <em class="text-rose">in</em>
+        </h1>
+
+        <form method="POST" class="flex flex-col gap-5">
+        {% csrf_token %}
+
+            <div class="flex flex-col gap-1">
+                <label class="text-xs tracking-widest uppercase text-muted">Username</label>
+                <input type="text" name="username" id="id_username" autofocus autocomplete="username"
+                    class="rounded-xl w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-dark text-sm tracking-wide bg-cream"
+                    placeholder="Enter your username">
+                {% if form.username.errors %}
+                    {% for error in form.username.errors %}
+                    <p class="text-xs text-rose mt-1">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="flex flex-col gap-1 relative">
+                <label class="text-xs tracking-widest uppercase text-muted">Password</label>
+                <img src="{% static 'icons/icons8-eye-50.png' %}" alt="password visibility toggle"
+                    class="w-5 h-5 absolute right-2.5 top-[29.5px] cursor-pointer opacity-60 hover:opacity-100 transition-opacity" id="togglePassword">
+                <input type="password" name="password" id="id_password" autocomplete="current-password"
+                    class="rounded-xl w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-dark text-sm tracking-wide bg-cream"
+                    placeholder="Enter your password">
+                {% if form.password.errors %}
+                    {% for error in form.password.errors %}
+                    <p class="text-xs text-rose mt-1">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="flex items-center gap-2 bg-rose/10 border border-rose rounded-xl px-4 py-3">
+                <span class="text-rose">✕</span>
+                <p class="text-xs text-rose tracking-wide">{{ form.non_field_errors.0 }}</p>
+            </div>
+            {% endif %}
+
+            <button type="submit"
+                class="mt-2 px-8 py-3 text-xs tracking-widest uppercase bg-dark text-cream hover:bg-rose transition-all">
+                Login
+            </button>
+        </form>
+
+        <p class="text-xs text-muted mt-6 text-center">
+            Don't have an account?
+            <a href="{% url 'register' %}" class="text-dark underline underline-offset-2">Register</a>
+        </p>
+
+    </div>
+</section>
+{% endblock %}

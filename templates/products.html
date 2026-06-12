@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} {{ category|title }} | Bloom{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<div class="px-4 sm:px-10 pt-10 sm:pt-12 pb-6 sm:pb-8 border-b border-dark/10">
+    <p class="text-xs tracking-widest uppercase text-muted mb-2">
+        Shop / <span class="text-rose">{{ category|title }}</span>
+    </p>
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+            <h1 class="font-display text-[2rem] sm:text-[2.8rem] font-light leading-none mb-3">
+                {{ category|title }}
+                <em class="text-rose"> — {{ products|length }} items</em>
+            </h1>
+            <p class="text-sm text-muted max-w-md leading-7">
+                {% if category == 'men' %}
+                    A curated collection of handcrafted gifts and arrangements, made with love for the special men in your life.
+                {% elif category == 'bouquets' %}
+                    A curated collection of handcrafted floral arrangements, made fresh daily with seasonal blooms.
+                {% elif category == 'gifts' %}
+                    Thoughtfully selected gifts for every occasion, wrapped with care and delivered with love.
+                {% elif category == 'matching sets' %}
+                    Coordinated sets designed to be shared — perfect for couples and loved ones.
+                {% else %}
+                    A carefully curated collection, handcrafted with love.
+                {% endif %}
+            </p>
+        </div>
+        <select onchange="window.location.href='?sort=' + this.value"
+            class="text-xs tracking-widest uppercase px-3 py-2 border border-dark/20 bg-cream text-muted cursor-pointer w-full sm:w-auto">
+            <option value="">Sort: Default</option>
+            <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+            <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+        </select>
+    </div>
+</div>
+
+<!-- GRID -->
+<section class="px-4 sm:px-10 py-8 sm:py-12">
+    {% if products %}
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        {% for product in products %}
+        <a href="{% url 'product_detail' product.id %}" class="group block">
+            <div class="rounded-2xl relative overflow-hidden mb-3 sm:mb-4 bg-rose-light w-full h-48 sm:h-75">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                    class="rounded-2xl w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
+                {% endif %}
+                {% if forloop.first %}
+                <span class="absolute top-3 left-3 text-xs tracking-widest uppercase px-2 py-1 bg-rose text-cream">New</span>
+                {% endif %}
+            </div>
+            <p class="font-display text-base sm:text-[1.15rem] mb-1 line-clamp-1">{{ product.name }}</p>
+            <div class="flex items-center justify-between">
+                <span class="text-sm font-medium text-rose">EGP {{ product.price }}</span>
+                <span class="text-xs tracking-widest uppercase text-muted border border-dark/10 px-3 py-1 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">
+                    View →
+                </span>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="flex flex-col items-center justify-center py-20 sm:py-32 text-center">
+        <p class="font-display text-[1.8rem] sm:text-[2rem] font-light text-muted mb-3">No items yet</p>
+        <p class="text-sm text-muted">Check back soon — new pieces are added regularly.</p>
+    </div>
+    {% endif %}
+</section>
+
+{% endblock %}

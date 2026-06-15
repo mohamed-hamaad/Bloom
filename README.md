@@ -3,7 +3,7 @@
 A customized, production-ready boutique e-commerce platform crafted for a local handmade floral brand. This project completely reimagines the traditional e-commerce workflow by introducing a friction-free checkout and a completely bespoke management system.
 
 ## Project Demo
-[Watch the Live Video Demo Here](https://drive.google.com/file/d/1Q-HJNZLe_Z0w2vKaUzM1mRwOXRrBRXv4/preview)
+[Watch the Live Video Demo Here](https://drive.google.com/file/d/1hka_mte0Hxh2o3P1BWVboTIVMYfBPQNN/preview)
 
 ---
 

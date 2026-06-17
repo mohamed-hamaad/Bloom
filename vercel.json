@@ -1,14 +1,15 @@
 {
-"version": 2,
-"builds": [
+  "version": 2,
+  "builds": [
     {
-    "src": "Bloom/wsgi.py"
+      "src": "Bloom/wsgi.py",
+      "use": "@vercel/python"
     }
-],
-"routes": [
+  ],
+  "routes": [
     {
-    "src": "/(.*)",
-    "dest": "Bloom/wsgi.py"
+      "src": "/(.*)",
+      "dest": "Bloom/wsgi.py"
     }
-]
+  ]
 }

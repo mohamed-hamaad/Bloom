@@ -1,16 +1,16 @@
-"""
-WSGI config for Bloom project.
-
-It exposes the WSGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/6.0/howto/deployment/wsgi/
-"""
-
 import os
-
+import sys
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Bloom.settings')
 
 application = get_wsgi_application()
+
+# 🚀 الحيلة السحرية: تشغيل الـ Migrations أوتوماتيك أول ما السيرفر يشتغل
+try:
+    from django.core.management import call_command
+    print("Running live migrations to Neon...")
+    call_command('migrate', interactive=False)
+    print("Migrations completed successfully!")
+except Exception as e:
+    print(sys.stderr, f"Migration failed: {e}")

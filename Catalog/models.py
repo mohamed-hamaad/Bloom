@@ -1,9 +1,10 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver                         
+from django.core.cache import cache                        
 
 # Create your models here.
-
-
 
 # ANCHOR product
 class Product(models.Model):
@@ -26,10 +27,10 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products/', null=True, blank=True)
     is_featured = models.BooleanField(default=False)
 
+   
+
     def __str__(self):
         return self.name
-
-
 
 # ANCHOR product image
 class ProductImage(models.Model):
@@ -43,8 +44,9 @@ class ProductImage(models.Model):
 class Order(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     isOrdered = models.BooleanField(default=False)
+    
     def __str__(self):
-        return f"Order #{self.id} - Total: {self.total_price}"
+        return f"Order #{self.id}"
 
     def get_total_price(self):
         return sum(item.total_price for item in self.items.all())
@@ -54,8 +56,18 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    
     def __str__(self):
         return f"Order of {self.quantity} x {self.product.name}"
     
     def total_price(self):
         return self.quantity * self.product.price
+
+
+
+
+@receiver(post_save, sender=Product)
+@receiver(post_delete, sender=Product)
+def clear_product_caches(sender, instance, **kwargs):
+    cache.clear()  
+    print("🔥 Caches cleared successfully because a product was updated!")

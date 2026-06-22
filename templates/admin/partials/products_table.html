@@ -1,0 +1,46 @@
+<!-- admin/partials/products_table.html -->
+<div class="border-t border-dark/10">
+{% for product in page_obj %}
+<div class="grid items-center py-4 border-b border-dark/10 gap-4"
+    style="grid-template-columns:50px 1fr 120px 100px 80px 120px;">
+    <div class="w-12 h-12 bg-rose-light overflow-hidden shrink-0">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover"/>
+        {% endif %}
+    </div>
+    <p class="font-display text-base truncate">{{ product.name }}</p>
+    <span class="text-xs tracking-widest uppercase text-muted">{{ product.category|title }}</span>
+    <span class="text-sm text-rose">EGP {{ product.price }}</span>
+    {% if product.is_featured %}
+    <span class="text-xs tracking-widest uppercase text-sage">Featured</span>
+    {% else %}
+    <span></span>
+    {% endif %}
+    <div class="flex gap-2">
+        <a href="{% url 'edit_product' product.id %}" class="text-xs tracking-widest uppercase px-3 py-1 border border-dark/20 text-dark hover:bg-dark hover:text-cream transition-all">Edit</a>
+        <form method="POST" action="{% url 'delete_product' product.id %}" class="inline">
+            {% csrf_token %}
+            <button type="submit" class="text-xs tracking-widest uppercase px-3 py-1 border border-rose text-rose hover:bg-rose hover:text-cream transition-all cursor-pointer">Delete</button>
+        </form>
+    </div>
+</div>
+{% empty %}
+<div class="py-16 text-center">
+    <p class="font-display text-[1.5rem] font-light text-muted">No products yet</p>
+</div>
+{% endfor %}
+</div>
+
+{% if page_obj.has_other_pages %}
+<div class="flex justify-between items-center mt-6 pt-4 border-t border-dark/5">
+    <span class="text-xs tracking-widest uppercase text-muted">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    <div class="flex gap-2 pagination-links"> <!-- ضفنا كلاس هنا عشان الـ JS يمسكه -->
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="text-xs tracking-widest uppercase px-3 py-1.5 border border-dark/20 hover:bg-dark hover:text-cream transition-all">← Previous</a>
+        {% endif %}
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="text-xs tracking-widest uppercase px-3 py-1.5 bg-dark text-cream hover:bg-rose transition-all">Next →</a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}

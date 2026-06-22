@@ -7,6 +7,8 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
+from .filters import *
+from django.core.paginator import Paginator
 # Create your views here.
 
 # ANCHOR home
@@ -153,14 +155,33 @@ def checkout(request):
 def dashboard(request):
     if not request.user.is_staff:
         return redirect('home')
-    products = Product.objects.all()
+        
+    products_queryset = Product.objects.all().order_by('-id')
+    my_filter = ProductFilter(request.GET, queryset=products_queryset)
+    filtered_products = my_filter.qs
+
+    paginator = Paginator(filtered_products, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     featured_count = Product.objects.filter(is_featured=True).count()
     categories_count = Product.objects.values('category').distinct().count()
-    return render(request, 'admin/dashboard.html', {
-        'products': products,
+    
+    context = {
+        'page_obj': page_obj,
+        'myFilter': my_filter,
+        'total_products_count': filtered_products.count(),
         'featured_count': featured_count,
         'categories_count': categories_count
-    })
+    }
+
+    # التريكة هنا: لو الطلب جاي من الفيتش (بنمرر مع الـ URL كلمة ajax=1)
+    if request.GET.get('ajax') == '1':
+        return render(request, 'admin/partials/products_table.html', context)
+        
+    return render(request, 'admin/dashboard.html', context)
+
+
 # ANCHOR add product
 @login_required
 def add_product(request):

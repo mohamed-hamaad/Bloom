@@ -7,7 +7,7 @@ from .models import Product
 class RegisterForm(UserCreationForm):
     class Meta:
         model = User
-        # تم إزالة password1 و password2 لأن Django يضيفهم تلقائياً بشكل آمن
+        
         fields = ('username', 'email')
 
     def __init__(self, *args, **kwargs):

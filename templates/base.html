@@ -2,35 +2,13 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth h-screen">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    
-    <!-- SEO Meta Tags -->
-    <title>{% block title %}Bloom | Premium Handcrafted Bouquets & Gifts{% endblock %}</title>
-    <meta name="description" content="{% block meta_description %}Discover Bloom - Cairo's premium boutique for handcrafted flower bouquets, luxury gifts, and matching sets. Handcrafted with love for every occasion.{% endblock %}" />
-    <meta name="keywords" content="bloom, flowers cairo, flower boutique, flower delivery egypt, gifts cairo, luxury bouquets, handcrafted gifts" />
-    <meta name="robots" content="index, follow" />
-    <meta name="author" content="Bloom" />
-    
-    <!-- Open Graph / Facebook (لمشاركة الروابط بشكل مميز) -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="{% block og_title %}Bloom | Premium Handcrafted Bouquets & Gifts{% endblock %}" />
-    <meta property="og:description" content="{% block og_description %}Discover Bloom - Cairo's premium boutique for handcrafted flower bouquets, luxury gifts, and matching sets.{% endblock %}" />
-    <meta property="og:image" content="{% block og_image %}https://yomcmtitknwdfbcdhora.supabase.co/storage/v1/object/public/Bloom%20statics/favicon-32x32.png{% endblock %}" />
-    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-    <meta property="og:site_name" content="Bloom" />
-
-    <!-- Twitter Cards -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="{% block twitter_title %}Bloom | Premium Handcrafted Bouquets & Gifts{% endblock %}" />
-    <meta name="twitter:description" content="{% block twitter_description %}Discover Bloom - Cairo's premium boutique for handcrafted flower bouquets, luxury gifts, and matching sets.{% endblock %}" />
-    <meta name="twitter:image" content="{% block twitter_image %}https://yomcmtitknwdfbcdhora.supabase.co/storage/v1/object/public/Bloom%20statics/favicon-32x32.png{% endblock %}" />
-
-    <!-- Links & Fonts -->
-    <link href="https://yomcmtitknwdfbcdhora.supabase.co/storage/v1/object/public/Bloom%20statics/output.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="https://yomcmtitknwdfbcdhora.supabase.co/storage/v1/object/public/Bloom%20statics/favicon-32x32.png">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{% block title %}Bloom{% endblock %}</title>
+<link rel="stylesheet" href="{% static 'src/output.css' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="{% static 'icons/favicon-32x32.png' %}">
 </head>
 <body class="bg-cream font-sans text-dark">
 
@@ -69,7 +47,8 @@
         {% endif %}
     </ul>
 
-    <a href="{% url 'home' %}#featured" class="hidden lg:flex mt-auto text-xs tracking-widest uppercase px-5 py-3 border border-dark text-dark text-center rounded-2xl">
+    <a href="#featured" 
+        class=" hidden lg:flex mt-auto text-xs tracking-widest uppercase px-5 py-3 border border-dark text-dark text-center rounded-2xl">
         See featured products
     </a>
 
@@ -108,8 +87,9 @@
     <a href="{% url 'register' %}" class="text-xs tracking-widest uppercase text-muted hover:text-dark transition-colors">Register</a>
     {% endif %}
 
-    <a href="{% url 'home' %}#featured" class="mt-auto text-xs tracking-widest uppercase px-5 py-3 border border-dark text-dark text-center rounded-2xl">
-        See featured products
+    <a href="{% url 'products_all' %}"
+        class="mt-auto text-xs tracking-widest uppercase px-5 py-3 border border-dark text-dark text-center rounded-2xl">
+        See all products
     </a>
 </div>
 
@@ -133,6 +113,6 @@
 </footer>
 
 {% block scripts %}{% endblock %}
-<script src="https://yomcmtitknwdfbcdhora.supabase.co/storage/v1/object/public/Bloom%20statics/script.js"></script>
+<script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

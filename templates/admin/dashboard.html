@@ -6,117 +6,144 @@
 {% block content %}
 <div class="flex min-h-screen">
 
-<!-- SIDEBAR -->
-<aside class="bg-dark text-cream flex flex-col px-6 py-8 gap-8 shrink-0" style="width:180px;">
-    <div>
-    <span class="font-display text-[1.4rem] font-light tracking-[0.08em]">
-        bloom<span class="text-rose italic">.</span>
-    </span>
-    <p class="text-[0.6rem] tracking-[0.15em] uppercase opacity-40 mt-1">Dashboard</p>
-    </div>
-
-    <nav class="flex flex-col gap-1">
-    <a href="{% url 'dashboard' %}"
-        class="text-xs tracking-widest uppercase px-3 py-2 text-cream border-l-2 border-rose"
-        style="background:rgba(200,112,90,0.15);">
-        Overview
-    </a>
-    <a href="{% url 'add_product' %}"
-        class="text-xs tracking-widest uppercase px-3 py-2 text-cream/50 hover:text-cream transition-colors">
-        + Add Product
-    </a>
-    </nav>
-
-    <a href="{% url 'home' %}"
-    class="mt-auto text-xs tracking-widest uppercase text-cream/40 hover:text-cream/70 transition-colors">
-    ← Back to site
-    </a>
-</aside>
-
-<!-- MAIN -->
-<main class="flex-1 px-8 py-10 bg-cream overflow-auto">
-
-    <!-- HEADER -->
-    <div class="flex justify-between items-end mb-8">
-    <div>
-        <p class="text-xs tracking-widest uppercase text-muted mb-1">Welcome back, {{ request.user.username }}</p>
-        <h1 class="font-display text-[2rem] font-light">
-        Dashboard <em class="text-rose">Overview</em>
-        </h1>
-    </div>
-    <a href="{% url 'add_product' %}"
-        class="text-xs tracking-widest uppercase px-5 py-3 bg-rose text-cream hover:bg-[#b85e49] transition-all">
-        + Add Product
-    </a>
-    </div>
-
-    <!-- STATS -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;" class=" gap-4 mb-10">
-    <div class="bg-[#F3EDE4] px-6 py-5">
-        <p class="text-xs tracking-widest uppercase text-muted mb-2">Total Products</p>
-        <p class="font-display text-[2rem] font-light">{{ products.count }}</p>
-    </div>
-    <div class="bg-[#F3EDE4] px-6 py-5">
-        <p class="text-xs tracking-widest uppercase text-muted mb-2">Featured</p>
-        <p class="font-display text-[2rem] font-light">{{ featured_count }}</p>
-    </div>
-    <div class="bg-[#F3EDE4] px-6 py-5">
-        <p class="text-xs tracking-widest uppercase text-muted mb-2">Categories</p>
-        <p class="font-display text-[2rem] font-light">{{ categories_count }}</p>
-    </div>
-    </div>
-
-    <!-- PRODUCTS TABLE -->
-    <p class="text-xs tracking-widest uppercase text-muted mb-4">All Products</p>
-
-    <div class="border-t border-dark/10">
-    {% for product in products %}
-    <div class="grid items-center py-4 border-b border-dark/10 gap-4"
-        style="grid-template-columns:50px 1fr 120px 100px 80px 120px;">
-
-        <div class="w-12 h-12 bg-rose-light overflow-hidden shrink-0">
-        {% if product.image %}
-        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover"/>
-        {% endif %}
+    <aside class="bg-dark text-cream flex flex-col px-6 py-8 gap-8 shrink-0" style="width:180px;">
+        <div>
+            <span class="font-display text-[1.4rem] font-light tracking-[0.08em]">
+                bloom<span class="text-rose italic">.</span>
+            </span>
+            <p class="text-[0.6rem] tracking-[0.15em] uppercase opacity-40 mt-1">Dashboard</p>
         </div>
 
-        <p class="font-display text-base truncate">{{ product.name }}</p>
+        <nav class="flex flex-col gap-1">
+            <a href="{% url 'dashboard' %}"
+                class="text-xs tracking-widest uppercase px-3 py-2 text-cream border-l-2 border-rose"
+                style="background:rgba(200,112,90,0.15);">
+                Overview
+            </a>
+            <a href="{% url 'add_product' %}"
+                class="text-xs tracking-widest uppercase px-3 py-2 text-cream/50 hover:text-cream transition-colors">
+                + Add Product
+            </a>
+        </nav>
 
-        <span class="text-xs tracking-widest uppercase text-muted">{{ product.category|title }}</span>
-
-        <span class="text-sm text-rose">EGP {{ product.price }}</span>
-
-        {% if product.is_featured %}
-        <span class="text-xs tracking-widest uppercase text-sage">Featured</span>
-        {% else %}
-        <span></span>
-        {% endif %}
-
-        <div class="flex gap-2">
-        <a href="{% url 'edit_product' product.id %}"
-            class="text-xs tracking-widest uppercase px-3 py-1 border border-dark/20 text-dark hover:bg-dark hover:text-cream transition-all">
-            Edit
+        <a href="{% url 'home' %}"
+        class="mt-auto text-xs tracking-widest uppercase text-cream/40 hover:text-cream/70 transition-colors">
+        ← Back to site
         </a>
-        <form method="POST" action="{% url 'delete_product' product.id %}" class="inline">
-            {% csrf_token %}
-            <button type="submit"
-            class="text-xs tracking-widest uppercase px-3 py-1 border border-rose text-rose hover:bg-rose hover:text-cream transition-all cursor-pointer">
-            Delete
-            </button>
-        </form>
+    </aside>
+
+    <main class="flex-1 px-8 py-10 bg-cream overflow-auto">
+
+        <div class="flex justify-between items-end mb-8">
+            <div>
+                <p class="text-xs tracking-widest uppercase text-muted mb-1">Welcome back, {{ request.user.username }}</p>
+                <h1 class="font-display text-[2rem] font-light">
+                Dashboard <em class="text-rose">Overview</em>
+                </h1>
+            </div>
+            <a href="{% url 'add_product' %}"
+                class="text-xs tracking-widest uppercase px-5 py-3 bg-rose text-cream hover:bg-[#b85e49] transition-all">
+                + Add Product
+            </a>
         </div>
 
-    </div>
-    {% empty %}
-    <div class="py-16 text-center">
-        <p class="font-display text-[1.5rem] font-light text-muted">No products yet</p>
-        <a href="{% url 'add_product' %}" class="text-xs tracking-widest uppercase text-rose mt-2 inline-block">
-        Add your first product →
-        </a>
-    </div>
-    {% endfor %}
-    </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;" class=" gap-4 mb-10">
+            <div class="bg-[#F3EDE4] px-6 py-5">
+                <p class="text-xs tracking-widest uppercase text-muted mb-2">Total Products</p>
+                <p class="font-display text-[2rem] font-light">{{ total_products_count }}</p>
+            </div>
+            <div class="bg-[#F3EDE4] px-6 py-5">
+                <p class="text-xs tracking-widest uppercase text-muted mb-2">Featured</p>
+                <p class="font-display text-[2rem] font-light">{{ featured_count }}</p>
+            </div>
+            <div class="bg-[#F3EDE4] px-6 py-5">
+                <p class="text-xs tracking-widest uppercase text-muted mb-2">Categories</p>
+                <p class="font-display text-[2rem] font-light">{{ categories_count }}</p>
+            </div>
+        </div>
 
-</main>
+        <div class="mb-6">
+            <form method="GET" id="filter-form" class="flex gap-2 items-center">
+                <div class="flex gap-2 items-center justify-center bg-[#F3EDE4] px-4 py-2 rounded-lg">
+                    {{ myFilter.form }}
+                    <button type="submit"
+                        class="relative top-3 text-xs tracking-widest uppercase px-3 py-1 bg-rose text-cream hover:bg-[#b85e49] transition-all">
+                        Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+
+
+        <p class="text-xs tracking-widest uppercase text-muted mb-4">All Products</p>
+
+        <div id="table-container">
+            {% include 'admin/partials/products_table.html' %} <!-- بيحمل الجدول لأول مرة عادي -->
+        </div>
+        
+    </main>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterForm = document.getElementById('filter-form');
+        const tableContainer = document.getElementById('table-container');
+        let debounceTimer;
+
+        if (filterForm && tableContainer) {
+            // دالة الـ Fetch الأساسية
+            function fetchFilteredData() {
+                // بنجيب البيانات المكتوبة في الفورم ونحولها لـ URL Query
+                const formData = new URLSearchParams(new FormData(filterForm));
+                formData.append('ajax', '1'); // بنقول للـ Django رجع الـ Partial بس
+
+                // بنبعت الـ Fetch للـ View في الخلفية
+                fetch(`${window.location.pathname}?${formData.toString()}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        // السحر هنا: بنستبدل محتوى الـ Container بالجدول الجديد بس!
+                        tableContainer.innerHTML = html;
+                        listenToPagination(); // بنخلي الـ JS يراقب زراير الـ Pagination الجديدة
+                    });
+            }
+
+            // مراقبة الكتابة بـ Debounce
+            filterForm.querySelectorAll('input, select').forEach(input => {
+                input.addEventListener('input', function() {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(fetchFilteredData, 300); // 300 مللي ثانية بس
+                });
+                input.addEventListener('change', function() {
+                    clearTimeout(debounceTimer);
+                    fetchFilteredData();
+                });
+            });
+
+            // دالة عشان تخلي زراير الـ Pagination تشتغل بالـ Fetch برضه ومتقلبش الصفحة
+            function listenToPagination() {
+                const links = tableContainer.querySelectorAll('.pagination-links a');
+                links.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault(); // بنمنع اللينك يفتح صفحة جديدة
+                        const urlParams = new URLSearchParams(new URL(this.href).search);
+                        
+                        // بناخد رقم الصفحة ونحطه جوه حقول الفورم المخفية أو نبعته مع الداتا
+                        const formData = new URLSearchParams(new FormData(filterForm));
+                        formData.append('page', urlParams.get('page'));
+                        formData.append('ajax', '1');
+
+                        fetch(`${window.location.pathname}?${formData.toString()}`)
+                            .then(response => response.text())
+                            .then(html => {
+                                tableContainer.innerHTML = html;
+                                listenToPagination(); // ركّب المراقب تاني على الزراير الجديدة
+                            });
+                    });
+                });
+            }
+            
+            listenToPagination(); // شغلها لأول مرة
+        }
+    });
+</script>
 {% endblock %}

@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 
 # ANCHOR product
 class Product(models.Model):
-    # تعريف الاختيارات المتاحة في المتجر
+    
     CATEGORY_CHOICES = [
         ('bouquets', 'Bouquets'),
         ('gifts', 'Gifts'),
@@ -18,7 +18,7 @@ class Product(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     
-    # تحويل الحقل إلى ChoiceField عبر إضافة choices و default
+    
     category = models.CharField(
         max_length=50, 
         choices=CATEGORY_CHOICES, 

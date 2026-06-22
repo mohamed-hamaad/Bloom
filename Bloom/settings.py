@@ -14,7 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-glm0fdhc0ecv...')
 
 # 🚨 الأمان: يقرأ الـ DEBUG من ريلواي وإلا يعتبره False في الـ Production
-DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
+DEBUG ='True'
 
 ALLOWED_HOSTS = [
     'localhost', 

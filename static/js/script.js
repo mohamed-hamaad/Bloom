@@ -104,18 +104,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Image preview — product form
-    const fileInput = document.querySelector('input[type="file"]');
+    // 📸 Image preview — المطور والذكي لحل مشكلة التحديث ومزامنة الـ Preview لايف
+    const fileInput = document.getElementById('id_image') || document.querySelector('input[type="file"]');
     if (fileInput) {
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const preview = document.getElementById('image-preview');
-                    if (preview) {
-                        preview.src = e.target.result;
-                        preview.classList.remove('hidden');
+                    // بنحدث المعاينة في صندوق الصورة الحالية مباشرة أو صندوق الـ preview الجديد
+                    const currentImg = document.getElementById('current-product-image');
+                    const previewImg = document.getElementById('image-preview');
+                    
+                    if (currentImg) {
+                        currentImg.src = e.target.result;
+                    }
+                    if (previewImg) {
+                        previewImg.src = e.target.result;
+                        previewImg.classList.remove('hidden');
                     }
                 }
                 reader.readAsDataURL(file);

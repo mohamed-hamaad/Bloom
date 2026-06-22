@@ -7,7 +7,6 @@ from django.core.exceptions import ValidationError
 
 # ANCHOR product
 class Product(models.Model):
-    
     CATEGORY_CHOICES = [
         ('bouquets', 'Bouquets'),
         ('gifts', 'Gifts'),
@@ -18,7 +17,6 @@ class Product(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     
-    
     category = models.CharField(
         max_length=50, 
         choices=CATEGORY_CHOICES, 
@@ -27,9 +25,6 @@ class Product(models.Model):
     
     image = models.ImageField(upload_to='products/', null=True, blank=True)
     is_featured = models.BooleanField(default=False)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def __str__(self):
         return self.name

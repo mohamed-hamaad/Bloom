@@ -110,13 +110,13 @@ AWS_S3_OBJECT_PARAMETERS = {
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 AWS_S3_FILE_OVERWRITE = False  
 
-# 🚨 التعديل الجوهري لـ Django 6: تفعيل الـ Backend الجديد للسحابة والـ Static معاً
 STORAGES = {
     "default": {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
     },
+    # 👇 عدل السطر ده هنا بالظبط عشان يتجاهل الملفات الناقصة وميضربش 500
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage", 
     },
 }
 

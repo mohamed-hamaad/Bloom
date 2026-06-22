@@ -54,59 +54,62 @@
 
     <!-- FORM -->
     <div class="max-w-2xl">
-    <form method="POST" enctype="multipart/form-data" class="flex flex-col gap-6">
+        <form method="POST" enctype="multipart/form-data" class="flex flex-col gap-6">
         {% csrf_token %}
-
+    
         {% for field in form %}
         <div class="flex flex-col gap-2">
-        <label class="text-xs tracking-widest uppercase text-muted">{{ field.label }}</label>
-
-        {% if field.field.widget.input_type == 'checkbox' %}
-        <div class="flex items-center gap-3">
-            {{ field }}
-            <span class="text-sm text-muted">{{ field.label }}</span>
-        </div>
-        {% else %}
-            {{ field }}
-        {% endif %}
-
-        {% if field.errors %}
-            {% for error in field.errors %}
-            <p class="text-xs text-rose">{{ error }}</p>
-            {% endfor %}
-        {% endif %}
-
-        {% if field.help_text %}
-        <p class="text-xs text-muted opacity-60">{{ field.help_text }}</p>
-        {% endif %}
+            <label class="text-xs tracking-widest uppercase text-muted">{{ field.label }}</label>
+    
+            {% if field.field.widget.input_type == 'checkbox' %}
+            <div class="flex items-center gap-3">
+                {{ field }}
+                <span class="text-sm text-muted">{{ field.label }}</span>
+            </div>
+            {% elif field.name == 'image' %}
+            <div class="flex flex-col gap-3">
+                {{ field }}
+                
+                <p class="text-xs tracking-widest uppercase text-muted mt-2">Image Preview</p>
+                <div class="rounded-md w-80 h-96 bg-rose-light overflow-hidden flex items-center justify-center border border-dark/5">
+                    {% if action == 'Edit' and product.image %}
+                        <img id="current-product-image" src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover"/>
+                    {% else %}
+                        <img id="image-preview" src="" class="hidden w-full h-full object-cover"/>
+                        <p id="no-image-text" class="text-xs text-muted opacity-50">No image uploaded yet</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+                {{ field }}
+            {% endif %}
+    
+            {% if field.errors %}
+                {% for error in field.errors %}
+                <p class="text-xs text-rose">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+    
+            {% if field.help_text %}
+            <p class="text-xs text-muted opacity-60">{{ field.help_text }}</p>
+            {% endif %}
         </div>
         {% endfor %}
-
-        {% if action == 'Edit' and product.image %}
-        <div class="flex flex-col gap-2">
-        <p class="text-xs tracking-widest uppercase text-muted">Current Image</p>
-            <div class="rounded-md w-80 h-96 bg-rose-light overflow-hidden flex items-center justify-center">
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover"/>
-            </div>
-        </div>
-        {% endif %}
-        <img id="image-preview" src="" class="hidden w-24 h-24 object-cover mt-2 border border-dark/10"/>
-
+    
         <div class="flex gap-4 mt-4">
-        <button type="submit"
-            class="text-xs tracking-widest uppercase px-8 py-3 bg-dark text-cream hover:bg-rose transition-all cursor-pointer">
-            {% if action == 'Edit' %}
-                Submit Changes
-            {% else %}
-                Add Product
-            {% endif %}
-        </button>
-        <a href="{% url 'dashboard' %}"
-            class="text-xs tracking-widest uppercase px-8 py-3 border border-dark/20 text-dark hover:bg-dark hover:text-cream transition-all">
-            Cancel
-        </a>
+            <button type="submit"
+                class="text-xs tracking-widest uppercase px-8 py-3 bg-dark text-cream hover:bg-rose transition-all cursor-pointer">
+                {% if action == 'Edit' %}
+                    Submit Changes
+                {% else %}
+                    Add Product
+                {% endif %}
+            </button>
+            <a href="{% url 'dashboard' %}"
+                class="text-xs tracking-widest uppercase px-8 py-3 border border-dark/20 text-dark hover:bg-dark hover:text-cream transition-all">
+                Cancel
+            </a>
         </div>
-
     </form>
     </div>
 

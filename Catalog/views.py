@@ -9,13 +9,17 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from .filters import *
 from django.core.paginator import Paginator
+from django.views.decorators.cache import cache_page # 👈 استيراد الكاش للـ Views
+
 # Create your views here.
 
 # ANCHOR home
+@cache_page(60 * 15, key_prefix='home_cache') # 👈 كاش ذكي 15 دقيقة
 def home(request):
     featured_products = Product.objects.filter(is_featured=True)
     return render(request, 'home.html', {'featured_products': featured_products})
 
+@cache_page(60 * 15, key_prefix='products_cache') # 👈 كاش ذكي 15 دقيقة
 def all_products(request):
     products = Product.objects.all()
     sort = request.GET.get('sort')
@@ -26,6 +30,7 @@ def all_products(request):
     return render(request, 'products.html', {'products': products ,'category': 'All Products'} )
 
 # ANCHOR products
+@cache_page(60 * 15, key_prefix='products_cache') # 👈 كاش ذكي 15 دقيقة
 def products(request, category):
     category = category.lower()  
     products = Product.objects.filter(category=category)
@@ -37,6 +42,7 @@ def products(request, category):
     return render(request, 'products.html', {'products': products, 'category': category})  
 
 # ANCHOR product
+@cache_page(60 * 15, key_prefix='product_detail_cache') # 👈 كاش ذكي 15 دقيقة
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     return render(request, 'product_detail.html', {'product': product})
@@ -78,7 +84,6 @@ def logout_view(request):
 # ANCHOR add to cart
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    
     cart = request.session.get('cart', {})
     
     if str(product_id) in cart:
@@ -92,16 +97,12 @@ def add_to_cart(request, product_id):
 # ANCHOR remove from cart
 def remove_from_cart(request, product_id):
     cart = request.session.get('cart', {})
-    
     if str(product_id) in cart:
         del cart[str(product_id)]
         request.session['cart'] = cart
-    
     return redirect('cart')
 
-
 # ANCHOR update cart
-
 @require_POST
 def update_cart(request, product_id):
     cart = request.session.get('cart', {})
@@ -113,7 +114,6 @@ def update_cart(request, product_id):
         else:
             del cart[str(product_id)]
         request.session['cart'] = cart
-    
     return redirect('cart')
 
 # ANCHOR cart
@@ -150,7 +150,7 @@ def checkout(request):
     return render(request, 'checkout.html', {'cart_items': cart_items, 'grand_total': grand_total})
 
 # ANCHOR dashboard
-
+# 🛑 سيبنا الـ Dashboard والـ CRUD بدون كاش عشان التعديلات تظهر قدامك فوراً!
 @login_required
 def dashboard(request):
     if not request.user.is_staff:
@@ -175,12 +175,10 @@ def dashboard(request):
         'categories_count': categories_count
     }
 
-    # التريكة هنا: لو الطلب جاي من الفيتش (بنمرر مع الـ URL كلمة ajax=1)
     if request.GET.get('ajax') == '1':
         return render(request, 'admin/partials/products_table.html', context)
         
     return render(request, 'admin/dashboard.html', context)
-
 
 # ANCHOR add product
 @login_required
@@ -190,7 +188,7 @@ def add_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            form.save() # 👈 الـ save دي هتضرب جرس للـ Signal تمسح الكاش تلقائياً!
             return redirect('dashboard')
     else:
         form = ProductForm()
@@ -204,7 +202,7 @@ def edit_product(request, product_id):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
-            form.save()
+            form.save() # 👈 الـ save دي هتضرب جرس للـ Signal تمسح الكاش تلقائياً!
             return redirect('dashboard')
     else:
         form = ProductForm(instance=product)
@@ -217,5 +215,5 @@ def delete_product(request, product_id):
     if not request.user.is_staff:
         return redirect('home')
     product = get_object_or_404(Product, id=product_id)
-    product.delete()
+    product.delete() # 👈 الحذف هيضرب جرس للـ Signal يمسح الكاش تلقائياً!
     return redirect('dashboard')

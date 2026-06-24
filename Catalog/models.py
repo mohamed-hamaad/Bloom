@@ -68,6 +68,8 @@ class OrderItem(models.Model):
 
 @receiver(post_save, sender=Product)
 @receiver(post_delete, sender=Product)
+@receiver(post_save, sender=ProductImage) 
+@receiver(post_delete, sender=ProductImage)
 def clear_product_caches(sender, instance, **kwargs):
-    cache.clear()  
-    print("🔥 Caches cleared successfully because a product was updated!")
+    cache.clear()  # فجر كاش الموقع فوراً
+    print("🔥 Caches cleared successfully because product or gallery changed!")

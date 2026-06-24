@@ -9,17 +9,17 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from .filters import *
 from django.core.paginator import Paginator
-from django.views.decorators.cache import cache_page # 👈 استيراد الكاش للـ Views
-
+from django.forms import inlineformset_factory
 # Create your views here.
 
+
+
+
 # ANCHOR home
-@cache_page(60 * 15, key_prefix='home_cache') # 👈 كاش ذكي 15 دقيقة
 def home(request):
     featured_products = Product.objects.filter(is_featured=True)
     return render(request, 'home.html', {'featured_products': featured_products})
 
-@cache_page(60 * 15, key_prefix='products_cache') # 👈 كاش ذكي 15 دقيقة
 def all_products(request):
     products = Product.objects.all()
     sort = request.GET.get('sort')
@@ -30,7 +30,6 @@ def all_products(request):
     return render(request, 'products.html', {'products': products ,'category': 'All Products'} )
 
 # ANCHOR products
-@cache_page(60 * 15, key_prefix='products_cache') # 👈 كاش ذكي 15 دقيقة
 def products(request, category):
     category = category.lower()  
     products = Product.objects.filter(category=category)
@@ -42,7 +41,6 @@ def products(request, category):
     return render(request, 'products.html', {'products': products, 'category': category})  
 
 # ANCHOR product
-@cache_page(60 * 15, key_prefix='product_detail_cache') # 👈 كاش ذكي 15 دقيقة
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     return render(request, 'product_detail.html', {'product': product})
@@ -84,6 +82,7 @@ def logout_view(request):
 # ANCHOR add to cart
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+    
     cart = request.session.get('cart', {})
     
     if str(product_id) in cart:
@@ -97,12 +96,16 @@ def add_to_cart(request, product_id):
 # ANCHOR remove from cart
 def remove_from_cart(request, product_id):
     cart = request.session.get('cart', {})
+    
     if str(product_id) in cart:
         del cart[str(product_id)]
         request.session['cart'] = cart
+    
     return redirect('cart')
 
+
 # ANCHOR update cart
+
 @require_POST
 def update_cart(request, product_id):
     cart = request.session.get('cart', {})
@@ -114,6 +117,7 @@ def update_cart(request, product_id):
         else:
             del cart[str(product_id)]
         request.session['cart'] = cart
+    
     return redirect('cart')
 
 # ANCHOR cart
@@ -150,13 +154,13 @@ def checkout(request):
     return render(request, 'checkout.html', {'cart_items': cart_items, 'grand_total': grand_total})
 
 # ANCHOR dashboard
-# 🛑 سيبنا الـ Dashboard والـ CRUD بدون كاش عشان التعديلات تظهر قدامك فوراً!
+
 @login_required
 def dashboard(request):
     if not request.user.is_staff:
         return redirect('home')
         
-    products_queryset = Product.objects.all().order_by('-id')
+    products_queryset = Product.objects.all().order_by('id')
     my_filter = ProductFilter(request.GET, queryset=products_queryset)
     filtered_products = my_filter.qs
 
@@ -180,33 +184,81 @@ def dashboard(request):
         
     return render(request, 'admin/dashboard.html', context)
 
+
+ProductImageFormSet = inlineformset_factory(
+    Product, 
+    ProductImage, 
+    fields=('image',), 
+    extra=3, 
+    can_delete=True
+)
+
 # ANCHOR add product
 @login_required
 def add_product(request):
     if not request.user.is_staff:
         return redirect('home')
+        
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save() # 👈 الـ save دي هتضرب جرس للـ Signal تمسح الكاش تلقائياً!
+        formset = ProductImageFormSet(request.POST, request.FILES)
+        
+        if form.is_valid() and formset.is_valid():
+            product = form.save() 
+            formset.instance = product
+            formset.save() 
             return redirect('dashboard')
     else:
         form = ProductForm()
-    return render(request, 'admin/product_form.html', {'form': form, 'action': 'Add'})
+        formset = ProductImageFormSet()
+        
+    return render(request, 'admin/product_form.html', {'form': form, 'formset': formset, 'action': 'Add'})
 
+# ANCHOR edit product
 @login_required
 def edit_product(request, product_id):
     if not request.user.is_staff:
         return redirect('home')
+        
     product = get_object_or_404(Product, id=product_id)
+    
+    existing_images_count = product.images.count()
+
+    if existing_images_count == 1:
+        dynamic_extra = 2
+    elif existing_images_count == 2:
+        dynamic_extra = 1
+    elif existing_images_count >= 3:
+        dynamic_extra = 0
+    else: 
+        dynamic_extra = 3
+
+    DynamicImageFormSet = inlineformset_factory(
+        Product, 
+        ProductImage, 
+        fields=('image',), 
+        extra=dynamic_extra, # 👈 السحر هنا
+        can_delete=True
+    )
+    
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES, instance=product)
-        if form.is_valid():
-            form.save() # 👈 الـ save دي هتضرب جرس للـ Signal تمسح الكاش تلقائياً!
+        formset = DynamicImageFormSet(request.POST, request.FILES, instance=product)
+        
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            formset.save()
             return redirect('dashboard')
     else:
         form = ProductForm(instance=product)
-    return render(request, 'admin/product_form.html', {'form': form, 'action': 'Edit', 'product': product})
+        formset = DynamicImageFormSet(instance=product)
+        
+    return render(request, 'admin/product_form.html', {
+        'form': form, 
+        'formset': formset, 
+        'action': 'Edit', 
+        'product': product
+    })
 
 # ANCHOR delete product
 @login_required
@@ -215,5 +267,5 @@ def delete_product(request, product_id):
     if not request.user.is_staff:
         return redirect('home')
     product = get_object_or_404(Product, id=product_id)
-    product.delete() # 👈 الحذف هيضرب جرس للـ Signal يمسح الكاش تلقائياً!
+    product.delete()
     return redirect('dashboard')

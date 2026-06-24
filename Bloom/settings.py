@@ -13,8 +13,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-glm0fdhc0ecv...')
 
-# 🚨 الأمان: يقرأ الـ DEBUG من ريلواي وإلا يعتبره False في الـ Production
-DEBUG ='True'
+
+DEBUG ='False'
 
 ALLOWED_HOSTS = [
     'localhost', 
@@ -41,7 +41,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -98,7 +97,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# 🌐 إعدادات الاتصال بـ Supabase Storage عبر بروتوكول S3
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME', 'bloom-media')
@@ -114,20 +112,28 @@ STORAGES = {
     "default": {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
     },
-    # 👇 عدل السطر ده هنا بالظبط عشان يتجاهل الملفات الناقصة وميضربش 500
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage", 
     },
 }
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-# الـ Media الافتراضية
-MEDIA_ROOT = BASE_DIR / "media"
-MEDIA_URL = '/media/'
+if DEBUG:
+    
+    STATIC_URL = '/static/'
+    STATICFILES_DIRS = [BASE_DIR / 'static']
+    
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
+else:
+    
+    STATIC_URL = 'https://Bloom statics.supabase.co/storage/v1/object/public/Bloom%20statics/'
+    
+    # 2. روابط الـ Media (بتقرأ من باكت bloom-media لصور المنتجات)
+    MEDIA_URL = 'https://bloom-media.supabase.co/storage/v1/s3/'
+    
+    # الـ Static_root بنسيبه عشان الـ Deployment يعدي سليم
+    STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'

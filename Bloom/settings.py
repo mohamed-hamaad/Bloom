@@ -20,6 +20,7 @@ ALLOWED_HOSTS = [
     'localhost', 
     '127.0.0.1', 
     '.railway.app',
+    bloom-store-ebon.vercel.app
 ]
 
 CSRF_TRUSTED_ORIGINS = [

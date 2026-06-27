@@ -1,0 +1,14 @@
+{
+"version": 2,
+"builds": [
+    {
+    "src": "Bloom/wsgi.py"
+    }
+],
+"routes": [
+    {
+    "src": "/(.*)",
+    "dest": "Bloom/wsgi.py"
+    }
+]
+}
